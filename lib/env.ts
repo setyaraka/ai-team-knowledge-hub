@@ -5,7 +5,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32),
   GEMINI_API_KEY: z.string().min(1),
   GEMINI_CHAT_MODEL: z.string().default("gemini-1.5-flash"),
-  GEMINI_EMBEDDING_MODEL: z.string().default("text-embedding-004"),
+  GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   MAX_UPLOAD_MB: z.coerce.number().int().positive().default(10),
   DEFAULT_CHUNK_SIZE: z.coerce.number().int().min(200).max(4000).default(900),

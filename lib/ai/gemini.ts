@@ -13,7 +13,10 @@ export type Citation = {
 
 export async function embedText(text: string): Promise<number[]> {
   const model = genAI.getGenerativeModel({ model: env.GEMINI_EMBEDDING_MODEL });
-  const result = await model.embedContent(text);
+  const result = await model.embedContent({
+    content: { role: "user", parts: [{ text }] },
+    outputDimensionality: 768,
+  });
   return result.embedding.values;
 }
 
@@ -22,7 +25,10 @@ export async function embedMany(texts: string[]): Promise<number[][]> {
   const embeddings: number[][] = [];
 
   for (const text of texts) {
-    const result = await model.embedContent(text);
+    const result = await model.embedContent({
+      content: { role: "user", parts: [{ text }] },
+      outputDimensionality: 768,
+    });
     embeddings.push(result.embedding.values);
   }
 
