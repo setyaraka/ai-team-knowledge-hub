@@ -3,7 +3,7 @@
 import { marked } from "marked";
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -126,18 +126,19 @@ export function ChatClient() {
 function ChatBubble({ message }: { message: Message }) {
   const html = useMemo(() => marked.parse(message.content), [message.content]);
 
+  const { citations } = message;
   const uniqueCitations = useMemo(() => {
-    if (!message.citations) return [];
+    if (!citations) return [];
     const seen = new Set<string>();
-    const list: typeof message.citations = [];
-    for (const c of message.citations) {
+    const list: typeof citations = [];
+    for (const c of citations) {
       if (!seen.has(c.documentName)) {
         seen.add(c.documentName);
         list.push(c);
       }
     }
     return list;
-  }, [message.citations]);
+  }, [citations]);
 
   return (
     <div className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
