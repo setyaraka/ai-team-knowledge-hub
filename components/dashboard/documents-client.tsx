@@ -27,8 +27,8 @@ export function DocumentsClient({ summariesOnly = false }: { summariesOnly?: boo
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [chunkSize, setChunkSize] = useState(900);
-  const [chunkOverlap, setChunkOverlap] = useState(150);
+  const [chunkSize, setChunkSize] = useState(1200);
+  const [chunkOverlap, setChunkOverlap] = useState(200);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {

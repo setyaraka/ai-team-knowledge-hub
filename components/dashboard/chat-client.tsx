@@ -126,22 +126,44 @@ export function ChatClient() {
 function ChatBubble({ message }: { message: Message }) {
   const html = useMemo(() => marked.parse(message.content), [message.content]);
 
+  const uniqueCitations = useMemo(() => {
+    if (!message.citations) return [];
+    const seen = new Set<string>();
+    const list: typeof message.citations = [];
+    for (const c of message.citations) {
+      if (!seen.has(c.documentName)) {
+        seen.add(c.documentName);
+        list.push(c);
+      }
+    }
+    return list;
+  }, [message.citations]);
+
   return (
     <div className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
       <div
         className={cn(
           "max-w-[88%] rounded-lg px-4 py-3 text-sm leading-6",
-          message.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+          message.role === "user" ? "bg-primary text-white" : "bg-secondary text-secondary-foreground"
         )}
       >
-        <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: html }} />
-        {message.citations?.length ? (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {message.citations.map((citation) => (
-              <Badge key={`${citation.documentName}-${citation.chunkIndex}`}>
-                [{citation.marker}] {citation.documentName} · chunk {citation.chunkIndex}
-              </Badge>
-            ))}
+        <div
+          className={cn(
+            "prose prose-sm max-w-none",
+            message.role === "user" ? "prose-invert text-white" : "dark:prose-invert"
+          )}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+        {uniqueCitations.length ? (
+          <div className="mt-3 text-xs text-muted-foreground/80 border-t pt-2 border-border/40">
+            <span className="font-semibold block mb-1">Sources:</span>
+            <div className="flex flex-col gap-1">
+              {uniqueCitations.map((citation) => (
+                <div key={citation.documentName}>
+                  [{citation.marker}] Document: {citation.documentName}
+                </div>
+              ))}
+            </div>
           </div>
         ) : null}
       </div>

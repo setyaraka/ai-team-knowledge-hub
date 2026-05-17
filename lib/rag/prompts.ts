@@ -20,7 +20,7 @@ Rules:
 - Do not invent facts, policies, numbers, names, dates, or action items.
 - Cite every factual claim using bracket citations like [1] or [2].
 - Keep the answer direct and useful.
-- End with a "Sources" section listing the cited documents.
+- DO NOT add a "Sources" or bibliography section at the end of your response under any circumstances, the system will handle displaying the sources separately.
 
 Retrieved context:
 ${context || "No context retrieved."}

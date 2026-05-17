@@ -9,8 +9,8 @@ const envSchema = z.object({
   GEMINI_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   MAX_UPLOAD_MB: z.coerce.number().int().positive().default(10),
-  DEFAULT_CHUNK_SIZE: z.coerce.number().int().min(200).max(4000).default(900),
-  DEFAULT_CHUNK_OVERLAP: z.coerce.number().int().min(0).max(1000).default(150),
+  DEFAULT_CHUNK_SIZE: z.coerce.number().int().min(200).max(4000).default(1200),
+  DEFAULT_CHUNK_OVERLAP: z.coerce.number().int().min(0).max(1000).default(200),
   RAG_TOP_K: z.coerce.number().int().min(1).max(20).default(5),
   RATE_LIMIT_REQUESTS: z.coerce.number().int().positive().default(60),
   RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60)
