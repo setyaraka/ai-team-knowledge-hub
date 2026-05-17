@@ -32,18 +32,18 @@ ${question}
 
 export function buildSummaryPrompt(filename: string, content: string) {
   return `
-Summarize this internal company document.
+Buat ringkasan untuk dokumen internal perusahaan berikut dalam Bahasa Indonesia.
 
   Return raw JSON only, NO markdown code blocks, NO backticks.
   Use this exact JSON structure:
   {
-    "summary": "short paragraph summarizing the document",
-    "keyPoints": ["point 1", "point 2"],
-    "actionItems": ["item 1", "item 2"]
+    "summary": "paragraf pendek yang merangkum dokumen dalam Bahasa Indonesia",
+    "keyPoints": ["poin penting 1 dalam Bahasa Indonesia", "poin penting 2 dalam Bahasa Indonesia"],
+    "actionItems": ["tindakan yang harus dilakukan 1 dalam Bahasa Indonesia", "tindakan yang harus dilakukan 2 dalam Bahasa Indonesia"]
   }
 
-Document: ${filename}
-Content:
+Dokumen: ${filename}
+Konten:
 ${content.slice(0, 24000)}
 `;
 }
