@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { env } from "@/lib/env";
 
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY || "");
 
 export type Citation = {
   documentId: string;
@@ -16,7 +16,7 @@ export async function embedText(text: string): Promise<number[]> {
   const result = await model.embedContent({
     content: { role: "user", parts: [{ text }] },
     outputDimensionality: 768,
-  });
+  } as any);
   return result.embedding.values;
 }
 
@@ -28,7 +28,7 @@ export async function embedMany(texts: string[]): Promise<number[][]> {
     const result = await model.embedContent({
       content: { role: "user", parts: [{ text }] },
       outputDimensionality: 768,
-    });
+    } as any);
     embeddings.push(result.embedding.values);
   }
 
