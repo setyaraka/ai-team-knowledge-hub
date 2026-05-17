@@ -3,7 +3,6 @@
 import { marked } from "marked";
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
