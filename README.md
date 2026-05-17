@@ -1,6 +1,6 @@
 # AI Team Knowledge Hub
 
-Internal AI knowledge management SaaS built with Next.js App Router, TypeScript, PostgreSQL, pgvector, and Gemini. Users upload company documents, the app extracts text, chunks it, stores embeddings, and answers questions with grounded citations.
+Internal AI knowledge management SaaS built with Next.js App Router, TypeScript, PostgreSQL, pgvector, and SumoPod AI (using OpenAI SDK compatible API). Users upload company documents, the app extracts text, chunks it, stores embeddings, and answers questions with grounded citations in Indonesian.
 
 ## Architecture
 
@@ -11,12 +11,12 @@ This is a TypeScript-first fullstack app using Next.js API route handlers as the
 - `lib/db` owns PostgreSQL access and schema initialization SQL.
 - `lib/auth` owns password hashing, session cookies, and route protection.
 - `lib/documents` owns validation, text extraction, chunking, and async processing.
-- `lib/ai` wraps Gemini behind provider-shaped functions.
+- `lib/ai` wraps SumoPod AI / OpenAI behind provider-shaped functions.
 - `lib/rag` owns retrieval, prompt construction, answer generation, and citations.
 
 ## Quick Start
 
-1. Copy `.env.example` to `.env.local`.
+1. Copy `.env.example` to `.env`.
 2. Start Postgres with pgvector:
 
 ```bash
@@ -33,9 +33,27 @@ npm run db:init
 npm run dev
 ```
 
-4. Open `http://localhost:3000`.
+4. List available models on SumoPod AI:
+
+```bash
+npm run sumopod:models
+```
+
+5. Run embedding test to verify pgvector size alignment (768 dimensions):
+
+```bash
+npx tsx --env-file=.env scripts/test-embedding.ts
+```
+
+6. Open `http://localhost:3000`.
 
 The seed user is `demo@company.com` with password `password123`.
+
+## AI Models Configuration
+
+This application utilizes **SumoPod AI** via the official `openai` SDK:
+- **Embedding Model**: `text-embedding-3-small` (configured dynamically to project output vectors to exactly 768 dimensions matching pgvector's `vector(768)` database field).
+- **Chat/Generation Model**: `gpt-4o-mini` (used for document summarizing and processing grounded answers).
 
 ## Production Notes
 
