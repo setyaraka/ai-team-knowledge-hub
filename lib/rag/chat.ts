@@ -1,4 +1,4 @@
-import { generateText } from "@/lib/ai/gemini";
+import { generateText } from "@/lib/ai/openai";
 import { query } from "@/lib/db/client";
 import { env } from "@/lib/env";
 import { buildRagPrompt } from "@/lib/rag/prompts";

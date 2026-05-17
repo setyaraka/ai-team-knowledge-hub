@@ -1,4 +1,4 @@
-import { embedText } from "../lib/ai/gemini";
+import { embedText } from "../lib/ai/openai";
 
 async function testEmbeddingSize() {
   console.log("Testing embedding dimension size...");

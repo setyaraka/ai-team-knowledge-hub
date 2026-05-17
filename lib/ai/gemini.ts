@@ -35,13 +35,14 @@ export async function embedMany(texts: string[]): Promise<number[][]> {
   return embeddings;
 }
 
-export async function generateText(prompt: string) {
+export async function generateText(prompt: string, isJson: boolean = false) {
   const model = genAI.getGenerativeModel({
     model: env.GEMINI_CHAT_MODEL,
     generationConfig: {
       temperature: 0.2,
       topP: 0.8,
-      maxOutputTokens: 1400
+      maxOutputTokens: 1400,
+      responseMimeType: isJson ? "application/json" : "text/plain"
     }
   });
 

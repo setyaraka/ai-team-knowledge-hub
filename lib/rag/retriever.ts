@@ -1,5 +1,5 @@
 import { query, vectorLiteral } from "@/lib/db/client";
-import { embedText } from "@/lib/ai/gemini";
+import { embedText } from "@/lib/ai/openai";
 import { env } from "@/lib/env";
 
 export type RetrievedChunk = {

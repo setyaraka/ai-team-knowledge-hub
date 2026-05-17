@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:init": "tsx scripts/init-db.ts",
-    "gemini:models": "tsx --env-file=.env scripts/list-gemini-models.ts"
+    "sumopod:models": "tsx --env-file=.env scripts/list-sumopod-models.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

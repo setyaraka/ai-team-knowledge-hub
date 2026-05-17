@@ -1,4 +1,4 @@
-import { embedMany, generateText } from "@/lib/ai/gemini";
+import { embedMany, generateText } from "@/lib/ai/openai";
 import { query, vectorLiteral } from "@/lib/db/client";
 import { chunkText } from "@/lib/documents/chunk";
 import { extractText } from "@/lib/documents/extract";
@@ -12,11 +12,26 @@ type ProcessOptions = {
 };
 
 function safeJsonSummary(raw: string) {
-  const cleaned = raw.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+  // Try to find a JSON block in the response
+  const jsonMatch = raw.match(/\{[\s\S]*\}/);
+  const jsonStr = jsonMatch ? jsonMatch[0] : raw;
+
   try {
-    return JSON.parse(cleaned) as { summary?: string; keyPoints?: string[]; actionItems?: string[] };
-  } catch {
-    return { summary: raw.slice(0, 1000), keyPoints: [], actionItems: [] };
+    return JSON.parse(jsonStr) as { summary?: string; keyPoints?: string[]; actionItems?: string[] };
+  } catch (e) {
+    console.error("Failed to parse AI summary JSON:", e);
+    // If it's still failing, try one more time by cleaning common markdown
+    try {
+      const cleaned = raw.replace(/```json/g, "").replace(/```/g, "").trim();
+      return JSON.parse(cleaned) as { summary?: string; keyPoints?: string[]; actionItems?: string[] };
+    } catch {
+      // Last resort: return the raw text as summary
+      return { 
+        summary: raw.replace(/```json/g, "").replace(/```/g, "").trim().slice(0, 1000), 
+        keyPoints: [], 
+        actionItems: [] 
+      };
+    }
   }
 }
 
@@ -62,7 +77,7 @@ export async function processDocument(documentId: string, file: File, options: P
     }
 
     const document = await query<{ filename: string }>("SELECT filename FROM documents WHERE id = $1", [documentId]);
-    const summaryRaw = await generateText(buildSummaryPrompt(document.rows[0].filename, text));
+    const summaryRaw = await generateText(buildSummaryPrompt(document.rows[0].filename, text), true);
     const summary = safeJsonSummary(summaryRaw);
 
     await query(

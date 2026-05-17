@@ -34,12 +34,13 @@ export function buildSummaryPrompt(filename: string, content: string) {
   return `
 Summarize this internal company document.
 
-Return JSON only with this shape:
-{
-  "summary": "short paragraph",
-  "keyPoints": ["point"],
-  "actionItems": ["action"]
-}
+  Return raw JSON only, NO markdown code blocks, NO backticks.
+  Use this exact JSON structure:
+  {
+    "summary": "short paragraph summarizing the document",
+    "keyPoints": ["point 1", "point 2"],
+    "actionItems": ["item 1", "item 2"]
+  }
 
 Document: ${filename}
 Content:
