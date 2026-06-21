@@ -3,7 +3,6 @@ import { z } from "zod";
 const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(32),
-  GEMINI_API_KEY: z.string().optional(),
   SUMOPOD_API_KEY: z.string().optional(),
   GEMINI_CHAT_MODEL: z.string().default("gpt-4o-mini"),
   GEMINI_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
@@ -19,7 +18,6 @@ const envSchema = z.object({
 export const env = envSchema.parse({
   DATABASE_URL: process.env.DATABASE_URL,
   JWT_SECRET: process.env.JWT_SECRET,
-  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   SUMOPOD_API_KEY: process.env.SUMOPOD_API_KEY,
   GEMINI_CHAT_MODEL: process.env.GEMINI_CHAT_MODEL,
   GEMINI_EMBEDDING_MODEL: process.env.GEMINI_EMBEDDING_MODEL,

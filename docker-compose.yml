@@ -23,7 +23,6 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/knowledge_hub
       JWT_SECRET: change-me-to-a-long-random-secret-for-local-docker
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
       GEMINI_CHAT_MODEL: gemini-1.5-flash
       GEMINI_EMBEDDING_MODEL: text-embedding-004
       NEXT_PUBLIC_APP_URL: http://localhost:3000
