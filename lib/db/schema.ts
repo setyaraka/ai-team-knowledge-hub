@@ -65,4 +65,18 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE INDEX IF NOT EXISTS chats_user_id_idx ON chats(user_id);
 CREATE INDEX IF NOT EXISTS messages_chat_id_idx ON messages(chat_id);
+
+CREATE TABLE IF NOT EXISTS semantic_caches (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  query_text TEXT NOT NULL,
+  embedding vector(768) NOT NULL,
+  answer TEXT NOT NULL,
+  citations JSONB NOT NULL DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS semantic_caches_user_id_idx ON semantic_caches(user_id);
+CREATE INDEX IF NOT EXISTS semantic_caches_embedding_idx ON semantic_caches USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
 `;
+

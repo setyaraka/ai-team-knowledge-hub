@@ -11,8 +11,15 @@ export type RetrievedChunk = {
   similarity: number;
 };
 
-export async function retrieveRelevantChunks(userId: string, question: string, topK = env.RAG_TOP_K) {
-  const embedding = await embedText(question);
+export async function retrieveRelevantChunks(
+  userId: string,
+  questionOrEmbedding: string | number[],
+  topK = env.RAG_TOP_K
+) {
+  const embedding =
+    typeof questionOrEmbedding === "string"
+      ? await embedText(questionOrEmbedding)
+      : questionOrEmbedding;
   const result = await query<RetrievedChunk>(
     `
     SELECT

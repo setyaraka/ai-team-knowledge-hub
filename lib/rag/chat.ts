@@ -1,5 +1,5 @@
-import { generateText } from "@/lib/ai/openai";
-import { query } from "@/lib/db/client";
+import { generateText, embedText } from "@/lib/ai/openai";
+import { query, vectorLiteral } from "@/lib/db/client";
 import { env } from "@/lib/env";
 import { buildRagPrompt } from "@/lib/rag/prompts";
 import { retrieveRelevantChunks } from "@/lib/rag/retriever";
@@ -23,7 +23,34 @@ export async function answerQuestion(userId: string, message: string, chatId?: s
     [chat, message, estimateTokens(message)]
   );
 
-  const chunks = await retrieveRelevantChunks(userId, message, topK);
+  const embedding = await embedText(message);
+
+  // Check semantic cache
+  const cacheResult = await query<{ answer: string; citations: string }>(
+    `
+    SELECT answer, citations::text
+    FROM semantic_caches
+    WHERE user_id = $1 AND 1 - (embedding <=> $2::vector) >= $3
+    ORDER BY embedding <=> $2::vector
+    LIMIT 1
+    `,
+    [userId, vectorLiteral(embedding), env.SEMANTIC_CACHE_THRESHOLD]
+  );
+
+  if (cacheResult.rows.length > 0) {
+    const cached = cacheResult.rows[0];
+    const citations = JSON.parse(cached.citations);
+
+    await query(
+      "INSERT INTO messages (chat_id, role, content, citations, token_count) VALUES ($1, 'assistant', $2, $3, $4)",
+      [chat, cached.answer, JSON.stringify(citations), estimateTokens(cached.answer)]
+    );
+    await query("UPDATE chats SET updated_at = now() WHERE id = $1", [chat]);
+
+    return { chatId: chat, answer: cached.answer, citations };
+  }
+
+  const chunks = await retrieveRelevantChunks(userId, embedding, topK);
 
   if (chunks.length === 0) {
     const fallback =
@@ -46,6 +73,15 @@ export async function answerQuestion(userId: string, message: string, chatId?: s
     quote: chunk.content.slice(0, 260)
   }));
 
+  // Save to semantic cache
+  await query(
+    `
+    INSERT INTO semantic_caches (user_id, query_text, embedding, answer, citations)
+    VALUES ($1, $2, $3::vector, $4, $5)
+    `,
+    [userId, message, vectorLiteral(embedding), answer, JSON.stringify(citations)]
+  );
+
   await query(
     "INSERT INTO messages (chat_id, role, content, citations, token_count) VALUES ($1, 'assistant', $2, $3, $4)",
     [chat, answer, JSON.stringify(citations), estimateTokens(answer)]
@@ -54,3 +90,4 @@ export async function answerQuestion(userId: string, message: string, chatId?: s
 
   return { chatId: chat, answer, citations };
 }
+

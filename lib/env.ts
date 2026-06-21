@@ -12,7 +12,8 @@ const envSchema = z.object({
   DEFAULT_CHUNK_OVERLAP: z.coerce.number().int().min(0).max(1000).default(200),
   RAG_TOP_K: z.coerce.number().int().min(1).max(20).default(5),
   RATE_LIMIT_REQUESTS: z.coerce.number().int().positive().default(60),
-  RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60)
+  RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
+  SEMANTIC_CACHE_THRESHOLD: z.coerce.number().min(0).max(1).default(0.83)
 });
 
 export const env = envSchema.parse({
@@ -27,5 +28,6 @@ export const env = envSchema.parse({
   DEFAULT_CHUNK_OVERLAP: process.env.DEFAULT_CHUNK_OVERLAP,
   RAG_TOP_K: process.env.RAG_TOP_K,
   RATE_LIMIT_REQUESTS: process.env.RATE_LIMIT_REQUESTS,
-  RATE_LIMIT_WINDOW_SECONDS: process.env.RATE_LIMIT_WINDOW_SECONDS
+  RATE_LIMIT_WINDOW_SECONDS: process.env.RATE_LIMIT_WINDOW_SECONDS,
+  SEMANTIC_CACHE_THRESHOLD: process.env.SEMANTIC_CACHE_THRESHOLD
 });
